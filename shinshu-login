@@ -1,0 +1,13 @@
+#!/bin/bash
+
+ID="学籍番号"
+PASS=$(secret-tool lookup service shinshu-acsu account "$ID")
+
+if [ -z "$PASS" ]; then
+echo "パスワード取得失敗"
+exit 1
+fi
+
+RESULT=$(curl -s -X POST -d "uid=$ID" -d "pwd=$PASS" https://login.shinshu-u.ac.jp/cgi-bin/Login.cgi)
+
+echo "$RESULT" | grep -q "Login Success" && echo "接続成功" || echo "接続失敗"
